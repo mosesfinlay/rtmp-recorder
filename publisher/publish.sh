@@ -20,7 +20,7 @@ while true; do
       base="$(basename "$f")"
       if aws s3 ls "s3://$BUCKET/$PREFIX/$base" --region "$REGION" >/dev/null 2>&1; then
         echo "[publisher] cleanup: $f (uploaded to S3)"
-        rm -f "$f"
+        rm -f "$f" || true
       fi
     done
   fi
