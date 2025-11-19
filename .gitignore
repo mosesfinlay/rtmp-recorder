@@ -1,2 +1,4 @@
 .history
 .env
+*.pem
+.DS_Store
