@@ -6,7 +6,7 @@ This project is a complete RTMP streaming recording solution that captures live 
 
 The system works as a pipeline:
 
-1. **RTMP Server** (nginx-rtmp) receives live streams and records them as time-based FLV chunks (default: 5 minutes)
+1. **RTMP Server** (nginx-rtmp) receives live streams and records them as time-based FLV chunks (default: 15 minutes)
 2. **Remuxer** (FFmpeg) converts each FLV chunk to MP4 format individually
 3. **Publisher** (AWS CLI) uploads MP4 chunks to S3 storage as they become available
 
@@ -26,7 +26,7 @@ The system works as a pipeline:
   - `1935:1935` - RTMP streaming port
   - `80:80` - HTTP health check and file browsing
 - **Environment Variables**:
-  - `CHUNK_DURATION_MINUTES` - Duration of each recording chunk (default: 5 minutes)
+  - `CHUNK_DURATION_MINUTES` - Duration of each recording chunk (default: 15 minutes)
 - **Volumes**:
   - `./nginx/nginx.conf:/etc/nginx/nginx.conf:ro` - Custom NGINX configuration
   - `recordings_data:/recordings` - Shared volume for recorded files
@@ -236,7 +236,7 @@ RTMP Stream → NGINX-RTMP → FLV Files → FFmpeg → MP4 Files → AWS S3
 ## Data Flow
 
 1. **Ingestion**: RTMP streams arrive at port 1935
-2. **Chunked Recording**: NGINX saves streams as time-based FLV chunks in `/recordings/flv` (default: 5-minute segments)
+2. **Chunked Recording**: NGINX saves streams as time-based FLV chunks in `/recordings/flv` (default: 15-minute segments)
 3. **Processing**: Remuxer waits for each chunk to finish, then converts FLV chunk to MP4
 4. **Storage**: MP4 chunks are saved to `/recordings/mp4` with timestamps
 5. **Publishing**: Publisher syncs new MP4 chunks to S3 every few seconds
@@ -251,7 +251,7 @@ RTMP Stream → NGINX-RTMP → FLV Files → FFmpeg → MP4 Files → AWS S3
 
 ## Key Features
 
-- **Chunked Live Recording**: Captures RTMP streams in configurable time segments (default: 5 minutes)
+- **Chunked Live Recording**: Captures RTMP streams in configurable time segments (default: 15 minutes)
 - **Format Conversion**: Converts RTMP-native FLV chunks to web-friendly MP4
 - **Continuous Processing**: Each chunk is processed independently for uninterrupted streaming
 - **Cloud Storage**: Automatic S3 upload with configurable intervals
@@ -265,7 +265,7 @@ RTMP Stream → NGINX-RTMP → FLV Files → FFmpeg → MP4 Files → AWS S3
 
 | Variable                 | Service   | Default    | Description                         |
 | ------------------------ | --------- | ---------- | ----------------------------------- |
-| `CHUNK_DURATION_MINUTES` | rtmp      | 5          | Recording chunk duration in minutes |
+| `CHUNK_DURATION_MINUTES` | rtmp      | 15         | Recording chunk duration in minutes |
 | `QUIET_SECONDS`          | remuxer   | 60         | Wait time before processing         |
 | `FLV_MAX_AGE_SECONDS`    | remuxer   | 0          | FLV cleanup threshold               |
 | `AWS_REGION`             | publisher | us-west-2  | AWS region                          |

@@ -4,7 +4,7 @@ services:
     container_name: rtmp
     restart: unless-stopped
     environment:
-      CHUNK_DURATION_MINUTES: ${CHUNK_DURATION_MINUTES:-5}
+      CHUNK_DURATION_MINUTES: ${CHUNK_DURATION_MINUTES:-15}
     ports:
       - "1935:1935"
       - "80:80"
