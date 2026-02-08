@@ -11,6 +11,7 @@ echo "[publisher] sync + cleanup: $DIR -> s3://$BUCKET/$PREFIX (every ${INTERVAL
 while true; do
   aws s3 sync "$DIR" "s3://$BUCKET/$PREFIX" \
     --region "$REGION" \
+    --exclude '*.tmp' \
     --no-progress \
     --only-show-errors
 
