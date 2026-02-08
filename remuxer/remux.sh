@@ -27,7 +27,7 @@ remux_one () {
   ( set -o noclobber; : > "$lock" ) 2>/dev/null || return 0
 
   echo "[remux] $src -> $dst"
-  if ffmpeg -hide_banner -loglevel error -y -i "$src" -c copy -movflags faststart "$tmp"; then
+  if ffmpeg -hide_banner -loglevel error -y -i "$src" -c copy -movflags faststart -f mp4 "$tmp"; then
     mv "$tmp" "$dst"
     echo "[remux] done: $dst"
     echo "[remux] cleanup: $src (converted to MP4)"
