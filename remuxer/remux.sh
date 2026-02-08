@@ -20,19 +20,21 @@ remux_one () {
   src="$1"
   base="$(basename "$src" .flv)"
   dst="${MP4_DIR}/${base}.mp4"
+  tmp="${MP4_DIR}/${base}.mp4.tmp"
   lock="${src}.lock"
 
   [ -f "$dst" ] && return 0
   ( set -o noclobber; : > "$lock" ) 2>/dev/null || return 0
 
   echo "[remux] $src -> $dst"
-  if ffmpeg -hide_banner -loglevel error -y -i "$src" -c copy "$dst"; then
+  if ffmpeg -hide_banner -loglevel error -y -i "$src" -c copy -movflags faststart "$tmp"; then
+    mv "$tmp" "$dst"
     echo "[remux] done: $dst"
     echo "[remux] cleanup: $src (converted to MP4)"
     rm -f "$src"
   else
     echo "[remux] ERROR processing $src" >&2
-    rm -f "$dst"
+    rm -f "$tmp"
   fi
 
   rm -f "$lock"
